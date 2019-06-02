@@ -1,0 +1,265 @@
+---
+plans:
+    # outdated packages (should be hidden)
+    - name: MICRO
+      cpu: 25
+      memory: 512
+      ep: 30 # entry processes
+      backup: 1
+      inodelimit: 50000
+      
+    - name: MINI
+      cpu: 25
+      memory: 512
+      ep: 30 # entry processes
+      backup: 1
+      inodelimit: 50000
+      
+    # defaults one Hosting Moldova
+    - name: BLOG
+      cpu: 25
+      memory: 512
+      ep: 30 # entry processes
+      backup: 1
+      inodelimit: 50000
+      
+    - name: CLASIC
+      cpu: 50
+      memory: 768
+      ep: 30 # entry processes
+      backup: 1
+      inodelimit: 100000
+      
+    - name: E-SHOP
+      cpu: 50
+      memory: 768
+      ep: 30 # entry processes
+      backup: 1
+      inodelimit: 100000
+      
+    - name: BUSINESS
+      cpu: 75
+      memory: 1024
+      ep: 30 # entry processes
+      backup: 1
+      inodelimit: 100000
+      
+    - name: BUSINESS10
+      cpu: 75
+      memory: 1024
+      ep: 30 # entry processes
+      backup: 1
+      inodelimit: 150000
+      
+    # premium hosting (amplica)
+    - name: SilverWeb
+      cpu: 25
+      memory: 512
+      ep: 10 # entry processes
+      backup: 0
+      inodelimit: 75000
+      
+    - name: GoldWebHosting
+      cpu: 50
+      memory: 1024
+      ep: 20 # entry processes
+      backup: 0
+      inodelimit: 150000
+      
+    - name: Platinum
+      cpu: 100
+      memory: 2048
+      ep: 40 # entry processes
+      backup: 1
+      inodelimit: 200000
+      
+    # defaults one (iphost)
+    - name: web100
+      cpu: 25
+      memory: 512
+      ep: 10 # entry processes
+      backup: 1
+      inodelimit: 50000
+      
+    - name: web300
+      cpu: 25
+      memory: 512
+      ep: 10 # entry processes
+      backup: 1
+      inodelimit: 50000
+      
+    # defaults one Hosting Moldova
+    - name: web600
+      cpu: 25
+      memory: 512
+      ep: 10 # entry processes
+      backup: 1
+      inodelimit: 50000
+      
+    - name: web-1G
+      cpu: 50
+      memory: 768
+      ep: 15 # entry processes
+      backup: 1
+      inodelimit: 100000
+      
+    - name: web-2G
+      cpu: 50
+      memory: 768
+      ep: 20 # entry processes
+      backup: 1
+      inodelimit: 100000
+      
+    - name: web-5G
+      cpu: 75
+      memory: 1024
+      ep: 20 # entry processes
+      backup: 1
+      inodelimit: 100000
+      
+    - name: web-7G
+      cpu: 75
+      memory: 1024
+      ep: 30 # entry processes
+      backup: 1
+      inodelimit: 150000
+      
+    - name: web-10G
+      cpu: 75
+      memory: 1024
+      ep: 50 # entry processes
+      backup: 1
+      inodelimit: 150000
+      
+    - name: web-20G
+      cpu: 75
+      memory: 1024
+      ep: 50 # entry processes
+      backup: 1
+      inodelimit: 200000
+      
+    # Perform hosting (iphost)
+    - name: Perform1
+      cpu: 100
+      memory: 2048
+      ep: 40
+      backup: 0
+      inodelimit: 150000
+      
+    - name: web500gbp1
+      cpu: 100
+      memory: 2048
+      ep: 40
+      backup: 0
+      inodelimit: 150000
+      
+    - name: Perform2
+      cpu: 200
+      memory: 4096
+      ep: 60
+      backup: 0
+      inodelimit: 200000
+      
+    - name: web500gbp2
+      cpu: 200
+      memory: 4096
+      ep: 60
+      backup: 0
+      inodelimit: 200000
+      
+    - name: Perform3
+      cpu: 300
+      memory: 6144
+      ep: 80
+      backup: 0
+      inodelimit: 300000
+    
+    - name: web500gbp3
+      cpu: 300
+      memory: 6144
+      ep: 80
+      backup: 0
+      inodelimit: 300000
+    
+    - name: Perform4
+      cpu: 400
+      memory: 8192
+      ep: 100
+      backup: 0
+      inodelimit: 400000
+      
+    # old Summer packages
+    - name: Full Summer
+      cpu: 25
+      memory: 512
+      ep: 20
+      backup: 1
+      inodelimit: 20000
+      
+    - name: Summer Basic
+      cpu: 50
+      memory: 768
+      ep: 30
+      backup: 0
+      inodelimit: 50000
+      
+    - name: Summer Pro
+      cpu: 100
+      memory: 1024
+      ep: 50
+      backup: 0
+      inodelimit: 70000
+      
+    # nelimitat (amplica)
+    - name: Unlimited_One
+      cpu: 150
+      memory: 2048
+      ep: 20
+      backup: 0
+      inodelimit: 150000
+      
+    - name: Unlimited_Plus
+      cpu: 150
+      memory: 2048
+      ep: 30
+      backup: 0
+      inodelimit: 250000
+      
+    - name: Unlimited_Full
+      cpu: 200
+      memory: 2048
+      ep: 40
+      backup: 0
+      inodelimit: 300000
+    
+    # nelimitat (iphost)
+    - name: unlimeco
+      cpu: 25
+      memory: 768
+      ep: 20 # entry processes
+      backup: 0
+      inodelimit: 100000
+      
+    - name: unlimpro
+      cpu: 25
+      memory: 1024
+      ep: 30 # entry processes
+      backup: 0
+      inodelimit: 150000
+      
+    - name: freehosting
+      cpu: 25
+      memory: 256
+      ep: 10
+      backup: 1
+      inodelimit: 5000
+      
+    - name: default
+      cpu: 100
+      inodelimit: 150000
+      iops: 100 # iops
+      io: 20 # mb/s
+      ep: 30 # entry processes
+      nproc: 100 # processes
+      backup: 1
+      memory: 2048 # memory in megs
