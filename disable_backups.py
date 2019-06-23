@@ -136,6 +136,10 @@ for i in users:
 		continue
 	
 	should_do_backup = get_plan_by_name(i.get('plan')).get('backup')
+	if should_do_backup == None:
+		print "I can't find if i should enable or disable backups for plan", i.get('plan')
+		should_do_backup = 1
+	
 	if should_do_backup != i.get('backup'):
 		if should_do_backup == 1:
 			print "We should do backups for",user,"so i enable backups"
