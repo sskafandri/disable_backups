@@ -208,7 +208,7 @@ if os.path.isfile(old_state_file):
 					overquota_inodes = int(current_state_users.get(user).get('inodesused')) - int(current_state_users.get(user).get('inodeslimit'))
 					
 					if overquota_inodes > 500:
-						overquota_messages.append("Over quota inodes for user "+user+", "+str(current_state_users.get(user).get('inodesused'))+"/"+ current_state_users.get(user).get('inodeslimit')+" inodes, package: "+current_state_users.get(user).get('plan'))
+						overquota_messages.append("Over quota inodes for user "+user+", "+str(current_state_users.get(user).get('inodesused'))+"/"+ str(current_state_users.get(user).get('inodeslimit'))+" inodes, package: "+current_state_users.get(user).get('plan'))
 					
 					if args.fix_overquota != 0 and overquota_inodes > 2:
 						newinodelimit = int(current_state_users.get(user).get('inodesused')) + overquota_allow
