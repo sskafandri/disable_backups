@@ -1,2 +1,2 @@
 0 0 * * 0 /root/disable_backups.py --toggle-backups
-0 0 * * 0 /root/disable_backups.py --check-diskusage-limit
+20 0 * * 0 /root/disable_backups.py --check-diskusage-limit --check-inodeusage-limit

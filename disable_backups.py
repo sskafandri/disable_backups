@@ -30,11 +30,18 @@ parser.add_argument('-d', '--check-diskusage-limit', nargs='?', default=0)
 parser.add_argument('-i', '--check-inodeusage-limit', nargs='?', default=0)
 parser.add_argument('-p', '--apply-package-limits', nargs='?', default=0)
 parser.add_argument('-q', '--apply-quota-limits', nargs='?', default=0)
-parser.add_argument('-fi', '--fix-inode-limits', nargs='?', default=0, help="Check if inodelimit on account match with inodelimit on package")
-parser.add_argument('-oq', '--fix-overquota', nargs='?', default=0, help="Increase inode quota limit with some amount, to allow hosting to work")
+parser.add_argument('-fi', '--fix-inode-limits', nargs='?', default=0, help="Check if inodelimit on account match with inodelimit on package, require --check-inodeusage-limit")
+parser.add_argument('-oq', '--fix-overquota', nargs='?', default=0, help="Increase inode quota limit with some amount, to allow hosting to work, require --check-inodeusage-limit")
 args = parser.parse_args()
 
 print args
+
+backup_messages=[];
+diskusage_messages=[];
+inodeusage_messages=[];
+overquota_messages=[];
+apply_packagelimit_messages='';
+apply_inodelimit_messages='';
 
 ###########################
 # run code
@@ -50,7 +57,7 @@ def toggle_backups(user, state):
 def should_ignore(user):
 	try:
 		if excluded_users[user] == 'ignore':
-			print("Should enable backup for "+user+" due exclude_users.txt file");
+			print("[INFO] Should enable backup for "+user+" due exclude_users.txt file");
 			toggle_backups(user, 1)
 			return True
 	
@@ -131,20 +138,20 @@ for i in users:
 		continue
 	
 	if diskused > diskquotalimit_backup:
-		print "Disable backups for",user,"due to high disk usage",str(diskused)
+		backup_messages.append("Disable backups for "+user+" due to high disk usage "+str(diskused))
 		toggle_backups(user, 0)
 		continue
 	
 	should_do_backup = get_plan_by_name(i.get('plan')).get('backup')
 	if should_do_backup == None:
-		print "I can't find if i should enable or disable backups for plan", i.get('plan')
+		print "[WARNING] I can't find if i should enable or disable backups for plan", i.get('plan')
 		should_do_backup = 1
 	
 	if should_do_backup != i.get('backup'):
 		if should_do_backup == 1:
-			print "We should do backups for",user,"so i enable backups"
+			backup_messages.append("We should do backups for "+user+" so i enable backups")
 		else:
-			print "We should not do backups for",user,"so i disable backups"
+			backup_messages.append("We should not do backups for "+user+" so i disable backups")
 		
 		toggle_backups(user, should_do_backup)
 	
@@ -161,24 +168,25 @@ if os.path.isfile(old_state_file):
 		user = i.get('user')
 		
 		try:
-			diff_du = int(current_state_users.get(user).get('diskused').replace('M', '')) - int(i.get('diskused').replace('M', ''))
-			if diff_du >= diff_in_megs:
-				print "[WARNING] Difference between last week and this for disk usage of user ", user, "is ", str(diff_du), "MB"
+			if current_state_users.get(user).get('inodesused') == None:
+				print "[INFO] Processing", user
 		except:
-			print "[WARNING] Skip disk usage difference for user", user
+			print "[WARNING] Skip user", user, "due inexistence"
+			continue;
 		
-		try:
-			diff_inode = int(current_state_users.get(user).get('inodesused')) - int(i.get('inodesused'))
-			if diff_inode >= diff_in_inodes:
-				print "[WARNING] Difference between last week and this for disk usage of user ", user, "is ", str(diff_inode), " inodes"
-		except:
-			print "[WARNING] Skip inode usage difference for user", user
+		diff_du = int(current_state_users.get(user).get('diskused').replace('M', '')) - int(i.get('diskused').replace('M', ''))
+		if diff_du >= diff_in_megs:
+			diskusage_messages.append("Difference between last week and this for disk usage of user "+user+" is "+str(diff_du)+"MB")
+		
+		diff_inode = int(current_state_users.get(user).get('inodesused')) - int(i.get('inodesused'))
+		if diff_inode >= diff_in_inodes:
+			inodeusage_messages.append("Difference between last week and this for disk usage of user "+user+" is "+str(diff_inode)+" inodes")
 		
 		if args.check_diskusage_limit != 0 and int(current_state_users.get(user).get('diskused').replace('M', '')) > 70000:
-			print "[WARNING] High disk usage for user",user, ",",current_state_users.get(user).get('diskused'),", package", i.get('plan')
+			diskusage_messages.append("High disk usage for user "+user+", "+current_state_users.get(user).get('diskused')+", package: "+i.get('plan'))
 		
 		if args.check_inodeusage_limit != 0 and current_state_users.get(user).get('inodesused') > warninglimit_inodes:
-			print "[WARNING] High inode usage for user",user, ",",str(current_state_users.get(user).get('inodesused')),"/", i.get('inodeslimit'), "inodes, package", i.get('plan')
+			inodeusage_messages.append("High inode usage for user "+user+", "+str(current_state_users.get(user).get('inodesused'))+"/"+str(i.get('inodeslimit'))+" inodes, package: "+i.get('plan'))
 		
 		if args.check_inodeusage_limit != 0:
 			if current_state_users.get(user).get('inodeslimit') == 'unlimited':
@@ -190,31 +198,28 @@ if os.path.isfile(old_state_file):
 				}
 				if current_state_users.get(user).get('inodeslimit') == 'unlimited' or int(values.get('inodelimit')) != int(current_state_users.get(user).get('inodeslimit')): # package vs user quota
 					cmd = "cl-quota -u %(user)s -S %(inodelimit)d -H %(inodelimit)d" % values
-					print "Executing", cmd
+					print "[VERBOSE] Executing", cmd
 					
 					ret = subprocess.call(cmd, shell=True)
 					if ret != 0:
-						print "Error while executing" ,cmd
+						print "[ERROR] Error while executing" ,cmd
 			else:
 				if current_state_users.get(user).get('inodeslimit') != 'unlimited':
 					overquota_inodes = int(current_state_users.get(user).get('inodesused')) - int(current_state_users.get(user).get('inodeslimit'))
 					
 					if overquota_inodes > 500:
-						print "[WARNING] Over quota inodes for user",user, ",",str(current_state_users.get(user).get('inodesused')),"/", current_state_users.get(user).get('inodeslimit'), "inodes, package", current_state_users.get(user).get('plan')
+						overquota_messages.append("Over quota inodes for user "+user+", "+str(current_state_users.get(user).get('inodesused'))+"/"+ current_state_users.get(user).get('inodeslimit')+" inodes, package: "+current_state_users.get(user).get('plan'))
 					
 					if args.fix_overquota != 0 and overquota_inodes > 2:
-						if overquota_inodes < current_state_users.get(user).get('inodesused'):
-							print "[WARNING] Overquota did not fixed due overquota_inodes for",user,"=>", str(current_state_users.get(user).get('inodesused'))
-						else:
-							newinodelimit = int(current_state_users.get(user).get('inodesused')) + overquota_allow
-							values = {"user": user, "inodelimit": newinodelimit}
-							print "Fixing overquota for", user, "new limit is", str(newinodelimit), "normal limit should be", str(current_state_users.get(user).get('inodeslimit'))
-							cmd = "cl-quota -u %(user)s -S %(inodelimit)d -H %(inodelimit)d" % values
-							print "Executing", cmd
-							
-							ret = subprocess.call(cmd, shell=True)
-							if ret != 0:
-								print "Error while executing" ,cmd
+						newinodelimit = int(current_state_users.get(user).get('inodesused')) + overquota_allow
+						values = {"user": user, "inodelimit": newinodelimit}
+						overquota_messages.append("Fixing overquota for "+user+" new limit is "+str(newinodelimit)+" normal limit should be "+ str(current_state_users.get(user).get('inodeslimit')))
+						cmd = "cl-quota -u %(user)s -S %(inodelimit)d -H %(inodelimit)d" % values
+						print "[VERBOSE] Executing", cmd
+						
+						ret = subprocess.call(cmd, shell=True)
+						if ret != 0:
+							print "[ERROR] Error while executing" ,cmd
 
 # update old_state_file
 fh = open(old_state_file, "w")
@@ -280,3 +285,24 @@ if args.apply_package_limits != 0 or args.apply_quota_limits != 0:
 			ret = subprocess.call(cmd, shell=True)
 			if ret != 0:
 				print "Error while executing" ,cmd
+
+
+if args.toggle_backups != 0:
+	print "\nList of accounts with switched backup feature:\n"
+	for i in backup_messages:
+		print i
+
+if args.check_diskusage_limit != 0:
+	print "\nList of accounts with disk usage issues:\n"
+	for i in diskusage_messages:
+		print i
+
+if args.check_inodeusage_limit != 0:
+	print "\nList of accounts with inode usage issues:\n"
+	for i in inodeusage_messages:
+		print i
+
+if args.check_inodeusage_limit != 0 and args.fix_inode_limits == 0:
+	print "\nList of accounts with overquota issues:\n"
+	for i in overquota_messages:
+		print i
