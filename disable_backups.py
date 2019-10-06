@@ -40,8 +40,6 @@ backup_messages=[];
 diskusage_messages=[];
 inodeusage_messages=[];
 overquota_messages=[];
-apply_packagelimit_messages='';
-apply_inodelimit_messages='';
 
 ###########################
 # run code
@@ -105,10 +103,19 @@ users = yaml.load(out).get('data').get('acct')
 current_state = users
 current_state_users = {}
 
-if os.path.isfile(planlist_file): 
+planlist_file = os.path.dirname(os.path.abspath(__file__))+"/"+planlist_file
+
+if os.path.isfile(planlist_file):
+	print "[INFO] Read plans from "+planlist_file
 	fh = open(planlist_file, "r")
 	plans = yaml.safe_load(fh).get('plans')
 	fh.close()
+
+try:
+	if plans == None:
+		print "Plans variable is none"
+except:
+	print "Plans can't be read from file"+planlist_file
 
 if args.toggle_backups != 0:
 	# load exceptions
