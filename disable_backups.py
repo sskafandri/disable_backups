@@ -121,14 +121,16 @@ if args.toggle_backups != 0:
 	# load exceptions
 	excluded_users={}
 	try:
-		f = open('exclude_users.txt', 'r')
+		exclude_file = 'exclude_users.txt'
+		exclude_file = os.path.dirname(os.path.abspath(__file__))+"/"+exclude_file
+		f = open(exclude_file, 'r')
 		c = f.readlines()
 		f.close()
 		for i in c:
 			i = i.strip()
 			excluded_users[i] = 'ignore'
 	except:
-		print("[WARNING] missing exclude_users.txt file, ignoring\n")
+		print("[WARNING] missing "+exclude_file+" file, ignoring\n")
 		
 	print "[INFO] Following exception found:", excluded_users.keys()
 
