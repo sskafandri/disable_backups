@@ -143,7 +143,7 @@ plans:
       cpu: 100
       memory: 2048
       ep: 40
-      backup: 0
+      backup: 1
       inodelimit: 150000
       
     - name: web500gbp1
@@ -157,7 +157,7 @@ plans:
       cpu: 200
       memory: 4096
       ep: 60
-      backup: 0
+      backup: 1
       inodelimit: 200000
       
     - name: web500gbp2
@@ -171,7 +171,7 @@ plans:
       cpu: 300
       memory: 6144
       ep: 80
-      backup: 0
+      backup: 1
       inodelimit: 300000
     
     - name: web500gbp3
@@ -185,7 +185,7 @@ plans:
       cpu: 400
       memory: 8192
       ep: 100
-      backup: 0
+      backup: 1
       inodelimit: 400000
       
     # old Summer packages
