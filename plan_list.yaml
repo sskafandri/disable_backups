@@ -253,6 +253,26 @@ plans:
       ep: 10
       backup: 1
       inodelimit: 5000
+    
+    - name: WP Start
+      cpu: 200
+      memory: 1024
+      iops: 100 # iops
+      io: 20 # mb/s
+      ep: 50 # entry processes
+      nproc: 100 # processes
+      backup: 1
+      inodelimit: 150000
+      
+    - name: WP Power
+      cpu: 300
+      memory: 3072
+      iops: 100 # iops
+      io: 20 # mb/s
+      ep: 50 # entry processes
+      nproc: 100 # processes
+      backup: 1
+      inodelimit: 250000
       
     - name: default
       cpu: 100
