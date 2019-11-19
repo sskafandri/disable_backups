@@ -13,6 +13,7 @@ if os.path.isfile(secret_file):
 	fh.close()
 
 backup_addons = [
+	'Gold Webhosting Backup',
 	'100GB Backup (billed annually)',
 	'Business 250 Backup',
 	'Business 500 backup',
