@@ -18,6 +18,7 @@ serigomd
 remarkim
 sansushi
 usenergy
+sportlan
 ruspinmd
 fiamd
 starpikc

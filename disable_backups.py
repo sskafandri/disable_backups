@@ -187,6 +187,10 @@ if os.path.isfile(old_state_file):
 		if diff_du >= diff_in_megs:
 			diskusage_messages.append("Difference between last week and this for disk usage of user "+user+" is "+str(diff_du)+"MB")
 		
+		if current_state_users.get(user).get('inodesused') == 'none':
+			current_state_users[user]['inodesused'] = 0
+			print "Unknown inodesused count for user", user
+		
 		diff_inode = int(current_state_users.get(user).get('inodesused')) - int(i.get('inodesused'))
 		if diff_inode >= diff_in_inodes:
 			inodeusage_messages.append("Difference between last week and this for disk usage of user "+user+" is "+str(diff_inode)+" inodes")
